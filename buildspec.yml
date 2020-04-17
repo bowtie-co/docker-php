@@ -1,0 +1,24 @@
+version: 0.2
+
+# Define CodeBuild phases
+phases:
+  # Initialize Docker daemon & install any dependencies, etc
+  install:
+    commands:
+      - docker-init
+      - docker-wait
+
+  # Run build(s), test(s), linter(s), etc
+  #   - Any failure (non 0 response code) will result in failed build (not pushed to ECR)
+  build:
+    commands:
+      - ./bin/ci
+
+  # After build steps complete successfully, push image/tags to ECR (to be "deployable")
+  post_build:
+    commands:
+      - deploy-ecs
+
+cache:
+  paths:
+    - '/var/lib/docker'
