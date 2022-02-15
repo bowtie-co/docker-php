@@ -1,4 +1,4 @@
-FROM php:8.1-fpm
+FROM php:7.3-fpm
 
 ENV APP_DIR /var/www/app
 ENV APP_USER www-data
@@ -13,11 +13,11 @@ WORKDIR $APP_DIR
 # Install apt requirements & dependencies
 RUN apt-get update && apt-get install -y \
     build-essential default-mysql-client postgresql \
-    libpng-dev libjpeg62-turbo-dev libfreetype6-dev libmagickwand-dev libzip-dev libssl-dev libbz2-dev libicu-dev libpq-dev libmcrypt-dev libonig-dev \
+    libpng-dev libjpeg62-turbo-dev libfreetype6-dev libmagickwand-dev libzip-dev libssl-dev libbz2-dev libicu-dev libpq-dev libmcrypt-dev \
     locales zip jpegoptim optipng pngquant gifsicle vim xvfb unzip git curl cron nginx supervisor \
     #
     # Install imagick, mcrypt, and redis using pecl
-    && pecl install imagick mcrypt redis \
+    && pecl install imagick-3.4.3 mcrypt-1.0.3 redis \
     #
     # Install composer
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
@@ -28,7 +28,7 @@ RUN apt-get update && apt-get install -y \
 
 # # Install extensions
 RUN docker-php-ext-install pdo_mysql pdo_pgsql mbstring zip exif pcntl bcmath bz2 ftp gettext opcache shmop sockets sysvmsg sysvsem sysvshm iconv intl \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-configure gd --with-gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/ \
     && docker-php-ext-install gd \
     && docker-php-ext-enable imagick mcrypt redis
 
