@@ -13,11 +13,11 @@ WORKDIR $APP_DIR
 # Install apt requirements & dependencies
 RUN apt-get update && apt-get install -y \
     build-essential default-mysql-client postgresql \
-    libpng-dev libjpeg62-turbo-dev libfreetype6-dev libmagickwand-dev libzip-dev libssl-dev libbz2-dev libicu-dev libpq-dev libmcrypt-dev libonig-dev \
+    libpng-dev libjpeg62-turbo-dev libfreetype6-dev libmagickwand-dev libzip-dev libssl-dev libbz2-dev libicu-dev libpq-dev libonig-dev \
     locales zip jpegoptim optipng pngquant gifsicle vim xvfb unzip git curl cron nginx supervisor \
     #
-    # Install imagick, mcrypt, and redis using pecl
-    && pecl install imagick mcrypt-1.0.4 redis \
+    # Install imagick, and redis using pecl
+    && pecl install imagick redis \
     #
     # Install composer
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
@@ -30,7 +30,7 @@ RUN apt-get update && apt-get install -y \
 RUN docker-php-ext-install pdo_mysql pdo_pgsql mbstring zip exif pcntl bcmath bz2 ftp gettext opcache shmop sockets sysvmsg sysvsem sysvshm iconv intl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd \
-    && docker-php-ext-enable imagick mcrypt redis
+    && docker-php-ext-enable imagick redis
 
 
 COPY etc/nginx $NGINX_PATH
